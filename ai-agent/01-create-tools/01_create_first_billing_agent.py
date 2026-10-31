@@ -103,6 +103,7 @@
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC -- En una telco, los "pedidos" de un cliente son sus suscripciones: lo indicamos en el COMMENT para que el LLM elija esta herramienta.
 # MAGIC -- Borramos la versión anterior con nombre largo (si existe) para que el agente no la cargue
 # MAGIC DROP FUNCTION IF EXISTS get_customer_billing_and_subscriptions;
 # MAGIC
@@ -125,7 +126,7 @@
 # MAGIC     total_late_fees DOUBLE,
 # MAGIC     latest_payment_status STRING
 # MAGIC )
-# MAGIC COMMENT 'Devuelve los detalles de suscripciones y facturación de un cliente.'
+# MAGIC COMMENT 'Devuelve los pedidos (servicios y planes contratados) y la facturación de un cliente: plan, cargo mensual, fecha de inicio, total facturado y pagado, pagos atrasados y estado del último pago. Úsala para cualquier pregunta sobre pedidos, compras, productos, suscripciones, facturas o pagos de un cliente. Requiere el customer_id (obtenlo antes con get_customer_by_email).'
 # MAGIC RETURN (
 # MAGIC     SELECT
 # MAGIC         s.customer_id, s.subscription_id, s.service_type, s.plan_name, s.plan_tier,

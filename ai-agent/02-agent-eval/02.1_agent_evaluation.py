@@ -285,6 +285,7 @@ try:
     config["config_version_name"] = "better_prompt"
     config["system_prompt"] = (
         "Eres un asistente de una empresa de telecomunicaciones. Llama a la herramienta adecuada para ayudar al usuario con facturación, soporte o información de su cuenta. "
+        "Los pedidos o compras de un cliente corresponden a sus suscripciones y facturación. "
         "NO menciones ninguna herramienta interna ni los pasos de tu razonamiento en la respuesta final. No digas 'según los registros' ni insinúes que estás buscando información. "
         "Responde siempre en español."
     )
