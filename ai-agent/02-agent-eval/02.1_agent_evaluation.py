@@ -358,7 +358,9 @@ if DEPLOY_AGENT_ENDPOINT:
     try:
         # Despliega el modelo en un endpoint de Model Serving (+ review app) solo si esta versión no está desplegada
         if len(agents.get_deployments(model_name=UC_MODEL_NAME, model_version=uc_registered_model_info.version)) == 0:
-            agents.deploy(UC_MODEL_NAME, uc_registered_model_info.version, endpoint_name=ENDPOINT_NAME, tags={"project": "dbdemos"})
+            agents.deploy(UC_MODEL_NAME, uc_registered_model_info.version, endpoint_name=ENDPOINT_NAME,
+                          scale_to_zero=True,  # obligatorio en Free Edition: el endpoint se apaga cuando no recibe tráfico
+                          tags={"project": "dbdemos"})
 
         # Esperamos a que el endpoint esté listo antes de pasar al siguiente notebook
         WorkspaceClient().serving_endpoints.wait_get_serving_endpoint_not_updating(name=ENDPOINT_NAME, timeout=timedelta(minutes=30))
