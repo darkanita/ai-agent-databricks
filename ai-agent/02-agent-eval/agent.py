@@ -28,7 +28,6 @@ from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt.tool_node import ToolNode
 
-from mlflow.entities import SpanType
 from mlflow.pyfunc import ResponsesAgent
 from mlflow.models import ModelConfig
 from mlflow.models.resources import DatabricksFunction, DatabricksServingEndpoint
@@ -233,16 +232,16 @@ class LangGraphResponsesAgent(ResponsesAgent):
     # -----------------------
     # Métodos de predicción
     # -----------------------
-    @mlflow.trace(span_type=SpanType.AGENT)
     def predict(self, request: ResponsesAgentRequest) -> ResponsesAgentResponse:
-        """Predicción no-streaming: recolecta todos los items finales del stream."""
+        """Predicción no-streaming: recolecta todos los items finales del stream.
+
+        No hace falta @mlflow.trace: MLflow traza automáticamente los métodos de ResponsesAgent."""
         outputs = [
             event.item for event in self.predict_stream(request)
             if event.type == "response.output_item.done"
         ]
         return ResponsesAgentResponse(output=outputs, custom_outputs=request.custom_inputs)
 
-    @mlflow.trace(span_type=SpanType.AGENT)
     def predict_stream(self, request: ResponsesAgentRequest) -> Generator[ResponsesAgentStreamEvent, None, None]:
         """Predicción en streaming: emite los items a medida que el grafo avanza."""
         cc_msgs = []

@@ -95,12 +95,19 @@
 # MAGIC
 # MAGIC ## 2. Obtener toda la información de facturación
 # MAGIC Agreguemos una función que devuelva los pedidos y suscripciones de un cliente. Recibe el ID del cliente y devuelve agregados de toda la facturación pasada y las suscripciones actuales.
+# MAGIC
+# MAGIC *Nota: el agente expone cada función con el nombre `catalogo__esquema__funcion`, y muchos LLM aceptan **máximo 64 caracteres**.
+# MAGIC Con el catálogo `workspace` de Free Edition, el nombre original `get_customer_billing_and_subscriptions` superaba ese límite
+# MAGIC (se truncaba y el LLM fallaba al llamarla), por eso aquí se llama `get_billing_and_subscriptions`.*
 
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC -- Borramos la versión anterior con nombre largo (si existe) para que el agente no la cargue
+# MAGIC DROP FUNCTION IF EXISTS get_customer_billing_and_subscriptions;
+# MAGIC
 # MAGIC -- Une las suscripciones del cliente con un resumen de su facturación (total facturado, pagado, pagos atrasados...)
-# MAGIC CREATE OR REPLACE FUNCTION get_customer_billing_and_subscriptions(customer_id_input BIGINT COMMENT 'ID del cliente usado para obtener pedidos, facturación y suscripciones')
+# MAGIC CREATE OR REPLACE FUNCTION get_billing_and_subscriptions(customer_id_input BIGINT COMMENT 'ID del cliente usado para obtener pedidos, facturación y suscripciones')
 # MAGIC RETURNS TABLE (
 # MAGIC     customer_id BIGINT,
 # MAGIC     subscription_id BIGINT,
@@ -148,7 +155,7 @@
 # DBTITLE 1,Probamos encadenando las dos funciones
 # MAGIC %sql
 # MAGIC SELECT *
-# MAGIC FROM get_customer_billing_and_subscriptions(
+# MAGIC FROM get_billing_and_subscriptions(
 # MAGIC   (SELECT customer_id FROM get_customer_by_email('john21@example.net'))
 # MAGIC );
 # MAGIC

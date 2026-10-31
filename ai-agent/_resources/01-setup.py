@@ -81,6 +81,7 @@ if not spark.catalog.tableExists("customers") or \
 # COMMAND ----------
 
 import pandas as pd
+import importlib.metadata
 
 def log_customer_support_agent_model(resources, request_example):
     """Registra el agente (agent.py + agent_config.yaml) como modelo de MLflow ("models from code")."""
@@ -95,7 +96,7 @@ def log_customer_support_agent_model(resources, request_example):
             model_config=f"{agent_eval_dir}/agent_config.yaml",
             input_example={"input": [{"role": "user", "content": request_example}]},
             resources=resources,  # Recursos de Databricks (endpoints, funciones, índices VS...) para la autenticación automática al desplegar
-            extra_pip_requirements=["databricks-connect", "mcp==1.29.0"]
+            extra_pip_requirements=["databricks-connect", f"mcp=={importlib.metadata.version('mcp')}"]  # misma versión de mcp que el entorno actual
         )
 
 def predict_wrapper(question):

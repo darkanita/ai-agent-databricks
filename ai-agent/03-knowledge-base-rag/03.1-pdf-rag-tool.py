@@ -323,6 +323,8 @@ for r in AGENT.get_resources():
 
 # COMMAND ----------
 
+import importlib.metadata
+
 with mlflow.start_run(run_name=model_config.get('config_version_name')):
   logged_agent_info = mlflow.pyfunc.log_model(
     name="agent",
@@ -331,7 +333,7 @@ with mlflow.start_run(run_name=model_config.get('config_version_name')):
     input_example={"input": [{"role": "user", "content": request_example}]},
     # Recursos (endpoints, funciones, VS...) para la autenticación automática al desplegar
     resources=AGENT.get_resources(),
-    extra_pip_requirements=["databricks-connect", "mcp==1.29.0"]
+    extra_pip_requirements=["databricks-connect", f"mcp=={importlib.metadata.version('mcp')}"]  # misma versión de mcp que el entorno actual
     )
 
 # COMMAND ----------

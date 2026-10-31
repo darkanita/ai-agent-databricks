@@ -111,6 +111,7 @@ answer
 # COMMAND ----------
 
 import mlflow
+import importlib.metadata
 def log_customer_support_agent_model(resources, request_example):
     """Registra agent.py + agent_config.yaml como un modelo pyfunc de MLflow dentro de un run."""
     with mlflow.start_run(run_name=model_config.get('config_version_name')):
@@ -120,7 +121,7 @@ def log_customer_support_agent_model(resources, request_example):
             model_config="agent_config.yaml",     # su configuración
             input_example={"input": [{"role": "user", "content": request_example}]},
             resources=resources,  # Recursos de Databricks (endpoints, funciones, VS...) para la autenticación automática al desplegar
-            extra_pip_requirements=["databricks-connect", "mcp==1.29.0"]
+            extra_pip_requirements=["databricks-connect", f"mcp=={importlib.metadata.version('mcp')}"]  # misma versión de mcp que el entorno actual
         )
 logged_agent_info = log_customer_support_agent_model(AGENT.get_resources(), request_example)
 
